@@ -1,0 +1,42 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+Lx = 1.0  
+Ly = 1.0  
+Nx = 50   
+Ny = 50   
+dx = Lx / (Nx - 1)  
+dy = Ly / (Ny - 1)  
+alpha = 0.01  
+T_hot = 100.0  
+T_cold = 0.0   
+dt = 0.0001    
+
+
+T = np.zeros((Ny, Nx))
+T[:, 0] = T_hot   
+T[:, -1] = T_cold  
+
+
+num_steps = 10000
+for step in range(num_steps):
+    
+    T_new = np.copy(T)
+    for i in range(1, Ny - 1):
+        for j in range(1, Nx - 1):
+            T_new[i, j] = T[i, j] + alpha * dt * (
+                (T[i+1, j] - 2*T[i, j] + T[i-1, j]) / dy**2 +
+                (T[i, j+1] - 2*T[i, j] + T[i, j-1]) / dx**2
+            )
+
+    
+    T = np.copy(T_new)
+
+
+plt.imshow(T, cmap='hot', origin='lower', extent=[0, Lx, 0, Ly])
+plt.colorbar(label='Temperatur')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Temperaturfordeling')
+plt.show()
